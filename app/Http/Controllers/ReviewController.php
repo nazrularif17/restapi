@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Place;
 use App\Models\Review;
 use Illuminate\Http\Request;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 class ReviewController extends Controller
 {
     public function index()
@@ -27,26 +28,31 @@ class ReviewController extends Controller
     {
         //
     }
-    public function store(Request $request)
+    public function store(Request $request, $placeid)
     {
-        $review = new Review();
-        $review->rating = $request->rating;
-        $review->comment = $request->comment;
-        $review->place_id = $request->place_id;
-        $review->user_id = $request->user_id;
+        try {
+            $place = Place::findById($placeid);
+            $place["avg_rating"] = ($place["avg_rating"]
+            * count ($place["avg_rating"]) +$request->rating) / (count($place["avg_rating"])+1);
 
-        if ($review->save()){
+            $user = JWTAuth::parseToken()->authenticate();
+            $userid = $user->id;
+
+            Review::create([
+                "rating" => $request->rating,
+                "comment" => $request->comment,
+                "place_id" => $placeid,
+                "user_id" => $userid,
+            ]);
             return response()->json([
                 "success"=>true,
-                "message"=>"review successfully added"
+                "message"=>"Review successfully added"
             ]);
         }
-        else {
-            return response()->json([
-                "success"=>false,
-                "message"=>"Something went wrong"
-            ]);
+        catch (\Exception $err){
+            response(["success"=> false, "message"=>$err]);
         }
+        
     }
     public function show($id){
         $review = Review::find($id);
