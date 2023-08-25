@@ -44,6 +44,7 @@ class ReviewController extends Controller
                 "place_id" => $placeid,
                 "user_id" => $userid,
             ]);
+            $place->save();
             return response()->json([
                 "success"=>true,
                 "message"=>"Review successfully added"

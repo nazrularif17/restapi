@@ -53,7 +53,7 @@ class PlaceController extends Controller
         }
     }
     public function show($id){
-        $place = Place::find($id);
+        $place = Place::with('reviews.user')->find($id);
         if ($place){
             return response()->json([
                 "success"=>true,
