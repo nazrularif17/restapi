@@ -9,7 +9,9 @@ class PlaceController extends Controller
 {
     public function index()
     {
-        $places = Place::all();
+        // SELECT = FROM places;
+        // SELECT name, address, image_url
+        $places = Place::select('id','name','address','image_url')->get();
         if ($places){
             return response()->json([
                 "success"=>true,

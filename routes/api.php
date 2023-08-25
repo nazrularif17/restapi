@@ -1,12 +1,11 @@
 <?php
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\PassportAuthController;
 use App\Http\Controllers\PlaceController;
 use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\ReviewController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Monolog\Handler\RotatingFileHandler;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,21 +35,25 @@ Route::post('/info', function (Request $request) {
 });
 
 Route::get('/places',[PlaceController::class,'index']);
-Route::post('/places',[PlaceController::class,'store']);
 Route::get('/places/{id}',[PlaceController::class,'show']);
-Route::put('/places/{id}',[PlaceController::class,'update']);
-Route::delete('/places/{id}',[PlaceController::class,'destroy']);
 
 Route::get('/facilities',[FacilityController::class,'index']);
-Route::post('/facilities',[FacilityController::class,'store']);
 Route::get('/facilities/{id}',[FacilityController::class,'show']);
-Route::put('/facilities/{id}',[FacilityController::class,'update']);
-Route::delete('/facilities/{id}',[FacilityController::class,'destroy']);
 
 Route::get('/reviews',[ReviewController::class,'index']);
-Route::post('/reviews',[ReviewController::class,'store']);
 Route::get('/reviews/{id}',[ReviewController::class,'show']);
-Route::put('/reviews/{id}',[ReviewController::class,'update']);
-Route::delete('/reviews/{id}',[ReviewController::class,'destroy']);
 
-Route::get('/users',[Controller::class,'index']);
+Route::post('/register', [PassportAuthController::class, 'register']);
+Route::post('/login', [PassportAuthController::class, 'login']);
+
+Route::middleware('jwt.auth')->group(function () {
+    Route::post('/places',[PlaceController::class,'store']);
+    Route::put('/places/{id}',[PlaceController::class,'update']);
+    Route::delete('/places/{id}',[PlaceController::class,'destroy']);
+    Route::post('/facilities',[FacilityController::class,'store']);
+    Route::put('/facilities/{id}',[FacilityController::class,'update']);
+    Route::delete('/facilities/{id}',[FacilityController::class,'destroy']);
+    Route::post('/reviews',[ReviewController::class,'store']);
+    Route::put('/reviews/{id}',[ReviewController::class,'update']);
+    Route::delete('/reviews/{id}',[ReviewController::class,'destroy']);
+});
