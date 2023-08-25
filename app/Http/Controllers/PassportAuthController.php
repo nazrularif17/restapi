@@ -32,10 +32,9 @@ class PassportAuthController extends Controller
     {
         $credentials = $request->only('email', 'password');
 
-        if ($token = $this->guard()->attempt($credentials)) {
-            return $this->respondWithToken($token);
+        if (!$token = JWTAuth::attempt($credentials)) {
+            return response()->json(['error' => 'Unauthorized'], 401);
         }
-
-        return response()->json(['error' => 'Unauthorized'], 401);
+        return response()->json(['token' => $token], 200);
     }
 }
