@@ -53,7 +53,7 @@ Route::middleware('jwt.auth')->group(function () {
     Route::post('/facilities',[FacilityController::class,'store']);
     Route::put('/facilities/{id}',[FacilityController::class,'update']);
     Route::delete('/facilities/{id}',[FacilityController::class,'destroy']);
-    Route::post('places/{id}/reviews',[ReviewController::class,'store']);
+    Route::post('places/{placeid}/reviews',[ReviewController::class,'store']);
     Route::put('/reviews/{id}',[ReviewController::class,'update']);
     Route::delete('/reviews/{id}',[ReviewController::class,'destroy']);
 });
