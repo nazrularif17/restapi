@@ -21,8 +21,8 @@ class PassportAuthController extends Controller
                 'email' => $request->email,
                 'password' => bcrypt($request->password)
             ]);
-            // $token = $user->createToken('LaravelAuthApp')->accessToken;
-            return response()->json(['success' => true, 'message' => 'User successfully registered'], 200);
+            $token = $user->createToken('LaravelAuthApp')->accessToken;
+            return response()->json(['token'=> $token,'success' => true, 'message' => 'User successfully registered'], 200);
         } catch (\Exception $e) {
             return response()->json(['error' => 'Registration failed ' . $e], 500);
         }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Place;
 use App\Models\Review;
 use Illuminate\Http\Request;
@@ -31,9 +32,9 @@ class ReviewController extends Controller
     public function store(Request $request, $placeid)
     {
         try {
-            $place = Place::findById($placeid);
+            $place = Place::find($placeid);
             $place["avg_rating"] = ($place["avg_rating"]
-            * count ($place["avg_rating"]) +$request->rating) / (count($place["avg_rating"])+1);
+            * count ($place["reviews"]) +$request->rating) / (count($place["reviews"])+1);
 
             $user = JWTAuth::parseToken()->authenticate();
             $userid = $user->id;
@@ -51,7 +52,7 @@ class ReviewController extends Controller
             ]);
         }
         catch (\Exception $err){
-            response(["success"=> false, "message"=>$err]);
+            return response()->json(["success"=> false, "message"=>$err]);
         }
         
     }
